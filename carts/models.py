@@ -1,6 +1,7 @@
 from django.db import models
 from products.models import Product
 from django.conf import settings
+from django.db.models import Q
 
 
 class Cart(models.Model):
@@ -13,6 +14,9 @@ class Cart(models.Model):
 
     session_id = models.CharField(max_length=255, null=True, blank=True)
 
+    # Active cart control
+    is_active = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -20,6 +24,16 @@ class Cart(models.Model):
 
     def total_price(self):
         return sum(item.subtotal() for item in self.items.all())
+
+    # Ensure only ONE active cart per user
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user'],
+                condition=Q(is_active=True),
+                name='unique_active_cart_per_user'
+            )
+        ]
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
