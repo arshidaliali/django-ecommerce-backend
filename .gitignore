@@ -13,4 +13,8 @@ venv/
 .env
 
 # Media files (optional)
-media/
+media/data.json
+django_backup.json
+ecommerce_backup.sql
+ecommerce_backup.sql
+data.json
