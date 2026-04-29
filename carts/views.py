@@ -13,6 +13,7 @@ class CartViewSet(ViewSet):
     # 🔑 Get or create cart (user or guest)
     def get_cart(self, request):
         if request.user.is_authenticated:
+            
             cart, _ = Cart.objects.get_or_create(
                 user=request.user,
                 session_id=None
